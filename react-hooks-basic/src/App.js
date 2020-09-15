@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import queryString from 'query-string';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
-import TodoList from './components/TodoList';
-import ToDoForm from './components/TodoForm';
-import PostList from './components/PostList';
 import Pagination from './components/Pagination';
+import PostList from './components/PostList';
+import PostFilterForm from './components/PostFilterForm';
 
 function App() {
 	const [ todoList, setTodoList ] = useState([
@@ -19,23 +19,40 @@ function App() {
 		_totalRows: 1
 	});
 
-	useEffect(() => {
-		async function fetchPostList() {
-			// ...
-			const requestUrl = 'http://js-post-api.herokuapp.com/api/posts?_limit=10&_page=1';
-			const response = await fetch(requestUrl);
-			const responseJSON = await response.json();
-			console.log(responseJSON);
+	const [ filters, setFilters ] = useState({
+		_limit: 10,
+		_page: 1,
+		title_like: ''
+	});
 
-			const { data } = responseJSON; // object destructoring
-			setPostList(data);
-		}
+	useEffect(
+		() => {
+			async function fetchPostList() {
+				try {
+					// ...
+					const paramString = queryString.stringify(filters);
+					// console.log(paramString);
+					const requestUrl = `http://js-post-api.herokuapp.com/api/posts?${paramString}`; // template string
+					const response = await fetch(requestUrl);
+					const responseJSON = await response.json();
+					// console.log(responseJSON);
 
-		fetchPostList();
-	}, []);
+					const { data, pagination } = responseJSON; // object destructoring
+					setPostList(data);
+					setPagination(pagination);
+				} catch (error) {
+					console.log('Failed to fetch post list ' + error.message);
+				}
+			}
+
+			fetchPostList();
+		},
+		[ filters ]
+	);
 
 	function handlePageChange(newPage) {
-		console.log(newPage);
+		// console.log(newPage);
+		setFilters({ ...filters, _page: newPage });
 	}
 
 	function handleTodoClick(todo) {
@@ -59,13 +76,23 @@ function App() {
 		setTodoList(newTodoList);
 	}
 
+	function handleFilterChange(newFilters) {
+		console.log(newFilters);
+		setFilters({
+			...filters,
+			_page: 1,
+			title_like: newFilters.searchTerm
+		});
+	}
+
 	return (
 		<div className="app">
-			<h1>React hooks - TodoList</h1>
+			<h1>React hooks - PostList</h1>
 			{/* <ToDoForm onSubmit={handleTodoFormSubmit} />
 			<TodoList todos={todoList} onTodoList={handleTodoClick} /> */}
+			<PostFilterForm onSubmit={handleFilterChange} />
 			<PostList posts={postList} />
-			<Pagination onPageChanon={handlePageChange} />
+			<Pagination pagination={pagination} onPageChange={handlePageChange} />
 		</div>
 	);
 }

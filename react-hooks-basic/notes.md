@@ -48,3 +48,10 @@ const newTodoList = [...todoList];
     ```
     
   -   Initial state chỉ được cho dùng lần đầu  -> sử dụng callback fucntion.
+
+# useEffect()
+
+# useRef()
+
+- Tạo ra 1 object mà giá trị không thay đổi giữa những lần render. giá trị của lần render trước sẽ được giữ lại
+lại
