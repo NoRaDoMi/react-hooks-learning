@@ -3,6 +3,7 @@ import './App.scss';
 import TodoList from './components/TodoList';
 import ToDoForm from './components/TodoForm';
 import PostList from './components/PostList';
+import Pagination from './components/Pagination';
 
 function App() {
 	const [ todoList, setTodoList ] = useState([
@@ -12,6 +13,11 @@ function App() {
 	]);
 
 	const [ postList, setPostList ] = useState([]);
+	const [ pagination, setPagination ] = useState({
+		_page: 1,
+		_limit: 10,
+		_totalRows: 1
+	});
 
 	useEffect(() => {
 		async function fetchPostList() {
@@ -27,6 +33,10 @@ function App() {
 
 		fetchPostList();
 	}, []);
+
+	function handlePageChange(newPage) {
+		console.log(newPage);
+	}
 
 	function handleTodoClick(todo) {
 		console.log(todo);
@@ -55,6 +65,7 @@ function App() {
 			{/* <ToDoForm onSubmit={handleTodoFormSubmit} />
 			<TodoList todos={todoList} onTodoList={handleTodoClick} /> */}
 			<PostList posts={postList} />
+			<Pagination onPageChanon={handlePageChange} />
 		</div>
 	);
 }
