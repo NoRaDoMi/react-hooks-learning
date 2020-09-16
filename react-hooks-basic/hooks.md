@@ -51,6 +51,9 @@ const newTodoList = [...todoList];
 
 # useEffect()
 
+- Khi sử dụng setInterval(), setTimeout() hoặc subscription thì sử dụng useEffect() có cleanup.
+  - **Error**: Can't update on an unmounted component.
+
 # useRef()
 
 - Tạo ra 1 object mà giá trị không thay đổi giữa những lần render. giá trị của lần render trước sẽ được giữ lại
